@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NSFW Blocker Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 350px;
+      min-height: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+      text-align: center;
+    }
+
+    .section {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    button.secondary {
+      background: #757575;
+    }
+
+    button.secondary:hover {
+      background: #616161;
+    }
+
+    button.danger {
+      background: #f44336;
+    }
+
+    button.danger:hover {
+      background: #d32f2f;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 26px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .remove-btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      width: auto;
+      margin: 0;
+    }
+
+    .value-display {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .status-active {
+      background: #4CAF50;
+    }
+
+    .status-inactive {
+      background: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛡️ NSFW Blocker</h1>
+
+    <!-- Enable/Disable -->
+    <div class="section">
+      <div class="toggle-row">
+        <label>Enable Protection</label>
+        <label class="toggle-switch">
+          <input type="checkbox" id="enabledToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Sensitivity -->
+    <div class="section">
+      <div class="section-title">Sensitivity</div>
+      <input type="range" id="sensitivity" min="0" max="1" step="0.05" value="0.7">
+      <div class="value-display">Current: <span id="sensitivityValue">0.70</span></div>
+      <p style="font-size: 11px; color: #888; margin-top: 8px;">Higher = More strict blocking</p>
+    </div>
+
+    <!-- Action -->
+    <div class="section">
+      <div class="section-title">Block Action</div>
+      <select id="actionSelect">
+        <option value="blur">Blur Content</option>
+        <option value="remove">Remove Completely</option>
+      </select>
+    </div>
+
+    <!-- Whitelist -->
+    <div class="section">
+      <div class="section-title">Whitelisted Domains</div>
+      <input type="text" id="whitelistInput" placeholder="example.com">
+      <button id="addWhitelistBtn" class="secondary">Add Domain</button>
+      <div id="whitelistContainer" style="margin-top: 10px;"></div>
+    </div>
+
+    <!-- Keyword Blocking -->
+    <div class="section">
+      <div class="section-title">Blocked Keywords</div>
+      <input type="text" id="keywordInput" placeholder="Enter keyword to block">
+      <button id="addKeywordBtn" class="secondary">Add Keyword</button>
+      <div id="keywordContainer" style="margin-top: 10px;"></div>
+    </div>
+
+    <!-- Password Protection -->
+    <div class="section">
+      <div class="section-title">Password Protection</div>
+      <div class="toggle-row">
+        <label>Enable Password</label>
+        <label class="toggle-switch">
+          <input type="checkbox" id="passwordToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div id="passwordSection" class="hidden">
+        <input type="password" id="passwordInput" placeholder="Enter password">
+        <button id="setPasswordBtn">Set Password</button>
+        <button id="disablePasswordBtn" class="danger" style="margin-top: 8px;">Disable Password</button>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 15px; font-size: 11px; color: #888;">
+      <span class="status-indicator" id="statusIndicator"></span>
+      <span id="statusText">Loading...</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
